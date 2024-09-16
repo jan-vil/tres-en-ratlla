@@ -77,17 +77,17 @@ function App() {
             <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
           </div>
           <br />
-          <p>El consell de gosses jutja les teves habilitats de tres en ratlla.</p>
+          <p>El consell de gosses jutjarà les teves habilitats de tres en ratlla.</p>
           <div className="dogpic" onClick={toggleDogs} style={{ cursor: 'pointer' }}>
-            <p>Click here to see the judges!</p>
-            {showDogs && (
+            <p>Clica aqui per veure els jutges!</p>
+          </div>
+          {showDogs && (
             <div className="dog-pictures">
               <Profile />
               <Profile />
               <Profile />
             </div>
           )}
-          </div>
         </header>
       </div>
     </>
