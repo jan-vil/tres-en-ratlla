@@ -3,24 +3,22 @@ import Profile from './dog.js';
 import { useState } from "react";
 
 
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick }) { /*Aquesta funció defineix els quadrats del tauler */
 
   /*   const [value, setValue] = useState(null); Declarem dos variables (value i setValue) que tinguin un estat null (buit) */
 
-  return (<button className="square" onClick={onSquareClick}>{value}</button>
+  return (<button className="square" onClick={onSquareClick}>{value}</button> /*Crea un botó amb classe square, que executa l'acció definida a onSquareClick*/
   );
 }
 
 
-function App() {
+function Board({ xIsNext, squares, onPlay }) { /*Defineix la taula del joc, amb la funció dels gossos */
 
   const [showDogs, setShowDogs] = useState(false);
-  const [xIsNext, setXIsNext] = useState(true);
-  const [squares, setSquares] = useState(Array(9).fill(null));
 
   function toggleDogs() {
     setShowDogs(!showDogs); // Toggle visibility of dog pictures
-  } 
+  }
 
   function handleClick(i) {
 
@@ -40,8 +38,7 @@ function App() {
       nextSquares[i] = 'O'
     }
 
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext)
+    onPlay(nextSquares);
   }
 
   const winner = calculateWinner(squares);
@@ -94,6 +91,51 @@ function App() {
 
 }
 
+export default function App() {
+
+  const xIsNext = currentMove % 2 === 0;
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [currentMove, setCurrentMove] = useState(0);
+  const currentSquares = history[currentMove];
+
+  function handlePlay(nextSquares) {
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+  }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = 'Go to move #' + move;
+    } else {
+      description = 'Go to game start';
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
+
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{moves}</ol>
+      </div>
+    </div>
+  );
+}
+
 
 function calculateWinner(squares) {
   const lines = [
@@ -114,5 +156,3 @@ function calculateWinner(squares) {
   }
   return null;
 }
-
-export default App;
